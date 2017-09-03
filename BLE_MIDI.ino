@@ -1,5 +1,6 @@
 /*
-    BLE_MIDI Example by neilbags
+    BLE_MIDI Example by neilbags 
+    https://github.com/neilbags/arduino-esp32-BLE-MIDI
     
     Based on BLE_notify example by Evandro Copercini.
 
