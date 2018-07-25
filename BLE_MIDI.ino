@@ -9,15 +9,15 @@
 */
 
 #include <BLEDevice.h>
-#include <BLEServer.h>
 #include <BLEUtils.h>
+#include <BLEServer.h>
 #include <BLE2902.h>
+
+#define SERVICE_UUID        "03b80e5a-ede8-4b33-a751-6ce34ec4c700"
+#define CHARACTERISTIC_UUID "7772e5db-3868-4112-a1a9-f2669d106bf3"
 
 BLECharacteristic *pCharacteristic;
 bool deviceConnected = false;
-
-#define MIDI_SERVICE_UUID        "03b80e5a-ede8-4b33-a751-6ce34ec4c700"
-#define MIDI_CHARACTERISTIC_UUID "7772e5db-3868-4112-a1a9-f2669d106bf3"
 
 uint8_t midiPacket[] = {
    0x80,  // header
@@ -41,22 +41,22 @@ void setup() {
   Serial.begin(115200);
 
   BLEDevice::init("ESP32 MIDI Example");
-
+    
   // Create the BLE Server
-  BLEServer *pServer = new BLEServer();
+  BLEServer *pServer = BLEDevice::createServer();
   pServer->setCallbacks(new MyServerCallbacks());
-  
+
   // Create the BLE Service
-  BLEService *pService = pServer->createService(BLEUUID(MIDI_SERVICE_UUID));
-  
+  BLEService *pService = pServer->createService(BLEUUID(SERVICE_UUID));
+
   // Create a BLE Characteristic
   pCharacteristic = pService->createCharacteristic(
-                      BLEUUID(MIDI_CHARACTERISTIC_UUID),
-                      BLECharacteristic::PROPERTY_READ   |
-                      BLECharacteristic::PROPERTY_WRITE  |
-                      BLECharacteristic::PROPERTY_NOTIFY |
-                      BLECharacteristic::PROPERTY_WRITE_NR
-                    );
+    BLEUUID(CHARACTERISTIC_UUID),
+    BLECharacteristic::PROPERTY_READ   |
+    BLECharacteristic::PROPERTY_WRITE  |
+    BLECharacteristic::PROPERTY_NOTIFY |
+    BLECharacteristic::PROPERTY_WRITE_NR
+  );
 
   // https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml
   // Create a BLE Descriptor
@@ -71,7 +71,6 @@ void setup() {
 
 void loop() {
   if (deviceConnected) {
-
    // note down
    midiPacket[2] = 0x90; // note down, channel 0
    midiPacket[4] = 127;  // velocity
@@ -87,6 +86,6 @@ void loop() {
    pCharacteristic->setValue(midiPacket, 5); // packet, length in bytes)
    pCharacteristic->notify();
 
-   delay(2000);
+   delay(500);
   }
 }
