@@ -8,4 +8,3 @@ Timestamps are not implemented.
 
 ## Prerequisites:
 * https://github.com/espressif/arduino-esp32
-* https://github.com/nkolban/esp32-snippets/blob/master/cpp_utils/ArduinoBLE.md
