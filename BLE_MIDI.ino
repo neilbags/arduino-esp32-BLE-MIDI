@@ -66,7 +66,9 @@ void setup() {
   pService->start();
 
   // Start advertising
-  pServer->getAdvertising()->start();
+  BLEAdvertising *pAdvertising = pServer->getAdvertising();
+  pAdvertising->addServiceUUID(pService->getUUID());
+  pAdvertising->start();
 }
 
 void loop() {
